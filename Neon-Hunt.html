@@ -1,0 +1,2607 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover,user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#03040a">
+
+<title>NEON HUNT</title>
+
+<style>
+*{
+ box-sizing:border-box;
+ -webkit-tap-highlight-color:transparent;
+ -webkit-user-select:none;
+ user-select:none;
+}
+
+:root{
+ --cyan:#00e5ff;
+ --purple:#b000ff;
+ --pink:#ff2bd6;
+ --green:#00ff9d;
+ --yellow:#ffe600;
+ --red:#ff3158;
+ --bg:#03040a;
+}
+
+html,body{
+ margin:0;
+ width:100%;
+ min-height:100%;
+ font-family:Arial,Helvetica,sans-serif;
+ color:#fff;
+ background:var(--bg);
+ overflow:hidden;
+ -webkit-text-size-adjust:100%;
+}
+
+body:before{
+ content:"";
+ position:fixed;
+ inset:0;
+ pointer-events:none;
+ z-index:-3;
+ background:
+ radial-gradient(circle at 15% 20%,rgba(0,229,255,.14),transparent 28%),
+ radial-gradient(circle at 85% 25%,rgba(176,0,255,.14),transparent 30%),
+ radial-gradient(circle at 50% 90%,rgba(255,43,214,.1),transparent 35%);
+}
+
+body:after{
+ content:"";
+ position:fixed;
+ inset:0;
+ pointer-events:none;
+ z-index:-2;
+ opacity:.3;
+ background-image:
+ linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),
+ linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);
+ background-size:42px 42px;
+ animation:gridMove 15s linear infinite;
+}
+
+@keyframes gridMove{
+ to{transform:translate(42px,42px)}
+}
+
+button{
+ font-family:inherit;
+ border:0;
+ cursor:pointer;
+ touch-action:manipulation;
+}
+
+/* ================= MENU ================= */
+
+.screen{
+ min-height:100dvh;
+}
+
+#menu{
+ min-height:100dvh;
+ display:flex;
+ flex-direction:column;
+ align-items:center;
+ justify-content:center;
+ padding:
+ max(20px,env(safe-area-inset-top))
+ max(14px,env(safe-area-inset-right))
+ max(20px,env(safe-area-inset-bottom))
+ max(14px,env(safe-area-inset-left));
+ position:relative;
+ overflow:auto;
+}
+
+.menuOrb{
+ position:absolute;
+ width:min(430px,90vw);
+ height:min(430px,90vw);
+ border-radius:50%;
+ border:1px solid rgba(0,229,255,.15);
+ box-shadow:
+ 0 0 80px rgba(0,229,255,.06),
+ inset 0 0 80px rgba(176,0,255,.05);
+ animation:orbRotate 20s linear infinite;
+ pointer-events:none;
+}
+
+.menuOrb:before,
+.menuOrb:after{
+ content:"";
+ position:absolute;
+ inset:35px;
+ border-radius:50%;
+ border:1px dashed rgba(176,0,255,.2);
+}
+
+.menuOrb:after{
+ inset:85px;
+ border:1px solid rgba(0,229,255,.13);
+}
+
+@keyframes orbRotate{
+ to{transform:rotate(360deg)}
+}
+
+.logo{
+ position:relative;
+ z-index:2;
+ text-align:center;
+ margin-bottom:24px;
+}
+
+.logoSmall{
+ font-size:10px;
+ letter-spacing:5px;
+ color:var(--cyan);
+ text-shadow:0 0 15px var(--cyan);
+ margin-bottom:8px;
+}
+
+.logo h1{
+ margin:0;
+ font-size:clamp(44px,14vw,100px);
+ line-height:.9;
+ font-weight:900;
+ letter-spacing:-4px;
+ background:linear-gradient(
+  90deg,#fff,var(--cyan),#fff,var(--pink)
+ );
+ background-size:250% auto;
+ -webkit-background-clip:text;
+ background-clip:text;
+ color:transparent;
+ animation:logoGradient 5s linear infinite;
+}
+
+@keyframes logoGradient{
+ to{background-position:250% center}
+}
+
+.logo p{
+ color:rgba(255,255,255,.45);
+ letter-spacing:3px;
+ font-size:10px;
+}
+
+.modeTitle{
+ z-index:2;
+ font-size:10px;
+ letter-spacing:4px;
+ color:rgba(255,255,255,.4);
+ margin-bottom:12px;
+}
+
+.modes{
+ position:relative;
+ z-index:2;
+ width:min(960px,100%);
+ display:grid;
+ grid-template-columns:repeat(3,1fr);
+ gap:12px;
+}
+
+.modeCard{
+ position:relative;
+ min-height:180px;
+ padding:20px;
+ text-align:left;
+ border:1px solid rgba(255,255,255,.09);
+ border-radius:20px;
+ background:
+ linear-gradient(
+  145deg,
+  rgba(255,255,255,.07),
+  rgba(255,255,255,.025)
+ );
+ backdrop-filter:blur(16px);
+ color:white;
+ overflow:hidden;
+ transition:.25s;
+}
+
+.modeCard:before{
+ content:"";
+ position:absolute;
+ width:170px;
+ height:170px;
+ right:-70px;
+ top:-70px;
+ border-radius:50%;
+ background:var(--modeColor);
+ filter:blur(55px);
+ opacity:.16;
+}
+
+.modeCard:active{
+ transform:scale(.97);
+}
+
+.modeIcon{
+ width:50px;
+ height:50px;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ border-radius:15px;
+ background:rgba(255,255,255,.07);
+ border:1px solid var(--modeColor);
+ font-size:24px;
+ margin-bottom:15px;
+}
+
+.modeCard h2{
+ margin:0 0 7px;
+ font-size:19px;
+}
+
+.modeCard p{
+ margin:0;
+ color:rgba(255,255,255,.48);
+ font-size:12px;
+ line-height:1.5;
+}
+
+.modeArrow{
+ position:absolute;
+ right:20px;
+ bottom:18px;
+ color:var(--modeColor);
+ font-size:20px;
+}
+
+.menuTools{
+ position:relative;
+ z-index:2;
+ display:flex;
+ gap:7px;
+ margin-top:17px;
+ flex-wrap:wrap;
+ justify-content:center;
+}
+
+.toolBtn,
+.gameBtn{
+ min-height:43px;
+ padding:10px 14px;
+ border-radius:11px;
+ color:rgba(255,255,255,.75);
+ background:rgba(255,255,255,.045);
+ border:1px solid rgba(255,255,255,.1);
+ transition:.2s;
+}
+
+.toolBtn:active,
+.gameBtn:active{
+ transform:scale(.95);
+}
+
+.bestLine{
+ position:relative;
+ z-index:2;
+ margin-top:14px;
+ font-size:11px;
+ letter-spacing:2px;
+ color:rgba(255,255,255,.4);
+}
+
+#bestScore{
+ color:var(--yellow);
+}
+
+/* ================= GAME ================= */
+
+#gameScreen{
+ display:none;
+ min-height:100dvh;
+ padding:
+ max(12px,env(safe-area-inset-top))
+ max(10px,env(safe-area-inset-right))
+ max(12px,env(safe-area-inset-bottom))
+ max(10px,env(safe-area-inset-left));
+}
+
+.gameTop{
+ width:min(1050px,100%);
+ margin:auto;
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ gap:8px;
+ flex-wrap:wrap;
+}
+
+.gameLogo{
+ width:100%;
+ text-align:center;
+ font-weight:900;
+ letter-spacing:2px;
+ color:var(--cyan);
+ text-shadow:0 0 12px var(--cyan);
+ font-size:15px;
+}
+
+.gameStats{
+ display:grid;
+ grid-template-columns:repeat(3,1fr);
+ width:100%;
+ gap:5px;
+}
+
+.stat{
+ padding:8px 4px;
+ border:1px solid rgba(255,255,255,.08);
+ background:rgba(255,255,255,.045);
+ border-radius:10px;
+ font-size:10px;
+ text-align:center;
+ white-space:nowrap;
+}
+
+#hits{color:var(--cyan)}
+#combo{color:var(--yellow)}
+#stage{color:var(--green)}
+#timer{color:#ff9d42}
+
+#game{
+ position:relative;
+ width:min(1050px,100%);
+ height:calc(100dvh - 235px);
+ min-height:340px;
+ max-height:650px;
+ margin:10px auto;
+ overflow:hidden;
+ border-radius:20px;
+ background:
+ radial-gradient(circle at 50% 50%,#121a29,#05070d);
+ border:1px solid rgba(255,255,255,.1);
+ box-shadow:
+ 0 25px 80px rgba(0,0,0,.55),
+ inset 0 0 80px rgba(0,229,255,.025);
+ cursor:crosshair;
+ touch-action:none;
+}
+
+#game:before{
+ content:"";
+ position:absolute;
+ inset:0;
+ background-image:
+ linear-gradient(rgba(0,229,255,.06) 1px,transparent 1px),
+ linear-gradient(90deg,rgba(0,229,255,.06) 1px,transparent 1px);
+ background-size:45px 45px;
+ pointer-events:none;
+}
+
+#game:after{
+ content:"";
+ position:absolute;
+ inset:0;
+ pointer-events:none;
+ background:
+ radial-gradient(
+  circle,
+  transparent 35%,
+  rgba(0,0,0,.5)
+ );
+}
+
+#square{
+ position:absolute;
+ width:60px;
+ height:60px;
+ z-index:5;
+ cursor:pointer;
+ user-select:none;
+ box-shadow:
+ 0 0 20px currentColor,
+ 0 0 50px currentColor;
+}
+
+.square-red{
+ background:#ff3158;
+ color:#ff3158;
+ border-radius:11px;
+}
+
+.square-blue{
+ background:#2196ff;
+ color:#2196ff;
+ border-radius:50%;
+}
+
+.square-green{
+ background:#00ff9d;
+ color:#00ff9d;
+ transform:rotate(45deg);
+}
+
+.square-yellow{
+ background:#ffe600;
+ color:#ffe600;
+ border-radius:11px;
+}
+
+.square-purple{
+ background:#b000ff;
+ color:#b000ff;
+ transform:rotate(45deg);
+}
+
+.square-orange{
+ background:#ff6d00;
+ color:#ff6d00;
+ border-radius:7px;
+}
+
+.gameButtons{
+ width:min(1050px,100%);
+ margin:auto;
+ display:grid;
+ grid-template-columns:repeat(3,1fr);
+ gap:6px;
+}
+
+.gameBtn{
+ width:100%;
+ font-size:11px;
+ padding:9px 4px;
+}
+
+#message{
+ min-height:25px;
+ width:min(1050px,100%);
+ margin:auto;
+ text-align:center;
+ font-size:14px;
+ font-weight:bold;
+ color:rgba(255,255,255,.8);
+}
+
+#pauseOverlay{
+ position:absolute;
+ inset:0;
+ display:none;
+ align-items:center;
+ justify-content:center;
+ flex-direction:column;
+ background:rgba(2,4,10,.82);
+ backdrop-filter:blur(10px);
+ z-index:50;
+}
+
+#pauseOverlay strong{
+ font-size:40px;
+ color:var(--cyan);
+ text-shadow:0 0 25px var(--cyan);
+}
+
+#pauseOverlay span{
+ color:rgba(255,255,255,.45);
+ margin-top:10px;
+ font-size:12px;
+}
+
+/* ================= BONUS ================= */
+
+.bonus{
+ position:absolute;
+ width:46px;
+ height:46px;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ border-radius:50%;
+ z-index:10;
+ font-size:22px;
+ cursor:pointer;
+ border:2px solid rgba(255,255,255,.8);
+ animation:bonusPulse .65s ease-in-out infinite alternate;
+}
+
+@keyframes bonusPulse{
+ to{transform:scale(1.18)}
+}
+
+.bonus-life{
+ background:#e91e63;
+ box-shadow:0 0 25px #e91e63;
+}
+
+.bonus-time{
+ background:#2196ff;
+ box-shadow:0 0 25px #2196ff;
+}
+
+.bonus-combo{
+ background:#ff9800;
+ box-shadow:0 0 25px #ff9800;
+}
+
+/* ================= EFFECT ================= */
+
+.hitEffect{
+ position:absolute;
+ width:20px;
+ height:20px;
+ border:3px solid white;
+ border-radius:50%;
+ pointer-events:none;
+ z-index:30;
+ animation:hitAnimation .45s forwards;
+}
+
+@keyframes hitAnimation{
+ from{
+  opacity:1;
+  transform:scale(.5);
+ }
+ to{
+  opacity:0;
+  transform:scale(5);
+ }
+}
+
+.particleHit{
+ position:absolute;
+ width:7px;
+ height:7px;
+ border-radius:50%;
+ background:white;
+ pointer-events:none;
+ z-index:30;
+ animation:particleHit .5s forwards;
+}
+
+@keyframes particleHit{
+ to{
+  opacity:0;
+  transform:
+   translate(var(--x),var(--y))
+   scale(.1);
+ }
+}
+
+/* ================= MODAL ================= */
+
+.modal{
+ position:fixed;
+ inset:0;
+ display:none;
+ align-items:center;
+ justify-content:center;
+ padding:
+ max(12px,env(safe-area-inset-top))
+ max(12px,env(safe-area-inset-right))
+ max(12px,env(safe-area-inset-bottom))
+ max(12px,env(safe-area-inset-left));
+ background:rgba(0,0,0,.8);
+ backdrop-filter:blur(12px);
+ z-index:100;
+}
+
+.modalBox{
+ width:min(560px,100%);
+ max-height:90dvh;
+ overflow:auto;
+ padding:24px 18px;
+ border-radius:20px;
+ background:
+ linear-gradient(
+  145deg,
+  rgba(20,27,48,.95),
+  rgba(6,8,16,.97)
+ );
+ border:1px solid rgba(0,229,255,.2);
+ box-shadow:0 30px 100px rgba(0,0,0,.7);
+}
+
+.modalBox h2{
+ margin-top:0;
+ color:var(--cyan);
+}
+
+.modalBox p{
+ font-size:13px;
+ line-height:1.5;
+}
+
+.closeBtn{
+ margin-top:12px;
+ padding:11px 18px;
+ border-radius:10px;
+ color:white;
+ background:rgba(255,255,255,.07);
+ border:1px solid rgba(255,255,255,.1);
+}
+
+table{
+ width:100%;
+ border-collapse:collapse;
+ font-size:11px;
+}
+
+th,td{
+ padding:9px 4px;
+ border-bottom:1px solid rgba(255,255,255,.08);
+ text-align:center;
+}
+
+th{
+ color:var(--cyan);
+}
+
+/* ================= GAME OVER ================= */
+
+#gameOverModal{
+ position:fixed;
+ inset:0;
+ display:none;
+ align-items:center;
+ justify-content:center;
+ padding:15px;
+ background:rgba(0,0,0,0);
+ backdrop-filter:blur(0);
+ z-index:300;
+ transition:.45s;
+}
+
+#gameOverModal.show{
+ background:rgba(5,0,5,.84);
+ backdrop-filter:blur(12px);
+}
+
+.gameOverBox{
+ position:relative;
+ width:min(500px,100%);
+ padding:35px 18px 25px;
+ text-align:center;
+ border-radius:23px;
+ background:
+ linear-gradient(
+  145deg,
+  rgba(35,8,18,.98),
+  rgba(8,5,12,.99)
+ );
+ border:1px solid rgba(255,49,88,.5);
+ box-shadow:
+ 0 0 30px rgba(255,49,88,.18),
+ 0 0 90px rgba(255,49,88,.12),
+ 0 30px 100px #000;
+ overflow:hidden;
+ opacity:0;
+ transform:translateY(35px) scale(.88);
+ transition:
+ opacity .5s ease .1s,
+ transform .55s cubic-bezier(.17,.89,.32,1.28) .1s;
+}
+
+#gameOverModal.show .gameOverBox{
+ opacity:1;
+ transform:translateY(0) scale(1);
+}
+
+.gameOverBox:before{
+ content:"";
+ position:absolute;
+ width:280px;
+ height:280px;
+ left:50%;
+ top:-170px;
+ transform:translateX(-50%);
+ border-radius:50%;
+ background:#ff3158;
+ filter:blur(90px);
+ opacity:.25;
+}
+
+.gameOverBox:after{
+ content:"";
+ position:absolute;
+ left:10%;
+ right:10%;
+ top:0;
+ height:2px;
+ background:
+ linear-gradient(
+  90deg,
+  transparent,
+  #ff3158,
+  #fff,
+  #ff3158,
+  transparent
+ );
+ box-shadow:0 0 20px #ff3158;
+}
+
+.gameOverIcon{
+ position:relative;
+ z-index:2;
+ width:72px;
+ height:72px;
+ margin:0 auto 16px;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ border-radius:50%;
+ font-size:36px;
+ background:rgba(255,49,88,.08);
+ border:1px solid rgba(255,49,88,.5);
+ box-shadow:0 0 30px rgba(255,49,88,.3);
+}
+
+.gameOverTitle{
+ position:relative;
+ z-index:2;
+ margin:0;
+ font-size:clamp(40px,12vw,64px);
+ font-weight:900;
+ letter-spacing:2px;
+ color:#ff3158;
+ text-shadow:
+ 0 0 10px #ff3158,
+ 0 0 35px rgba(255,49,88,.55);
+}
+
+.gameOverSubtitle{
+ position:relative;
+ z-index:2;
+ margin:11px 0 20px;
+ color:rgba(255,255,255,.45);
+ letter-spacing:2px;
+ font-size:9px;
+}
+
+.gameOverStats{
+ position:relative;
+ z-index:2;
+ display:grid;
+ grid-template-columns:repeat(3,1fr);
+ gap:5px;
+ margin-bottom:20px;
+}
+
+.gameOverStat{
+ padding:11px 4px;
+ border-radius:11px;
+ background:rgba(255,255,255,.045);
+ border:1px solid rgba(255,255,255,.07);
+}
+
+.gameOverStat span{
+ display:block;
+ font-size:8px;
+ color:rgba(255,255,255,.38);
+ margin-bottom:5px;
+}
+
+.gameOverStat strong{
+ font-size:17px;
+ color:#fff;
+}
+
+.gameOverButtons{
+ position:relative;
+ z-index:2;
+ display:grid;
+ grid-template-columns:1fr;
+ gap:7px;
+}
+
+.gameOverBtn{
+ width:100%;
+ min-height:46px;
+ padding:12px 18px;
+ border-radius:12px;
+ color:white;
+ font-weight:700;
+ font-size:13px;
+ border:1px solid rgba(255,255,255,.1);
+ background:rgba(255,255,255,.055);
+}
+
+.gameOverBtn.primary{
+ background:
+ linear-gradient(
+  135deg,
+  #ff3158,
+  #c9153e
+ );
+ border-color:#ff5475;
+ box-shadow:0 0 20px rgba(255,49,88,.2);
+}
+
+/* ================= SMALL IPHONE ================= */
+
+@media(max-width:390px){
+
+ .logo{
+  margin-bottom:16px;
+ }
+
+ .logo h1{
+  font-size:43px;
+ }
+
+ .modeCard{
+  min-height:110px;
+  padding:14px;
+ }
+
+ .modeIcon{
+  width:37px;
+  height:37px;
+  font-size:18px;
+  margin-bottom:7px;
+ }
+
+ .modeCard h2{
+  font-size:16px;
+ }
+
+ .modeCard p{
+  font-size:10px;
+ }
+
+ #game{
+  height:calc(100dvh - 225px);
+  min-height:320px;
+ }
+
+ .stat{
+  font-size:9px;
+  padding:7px 2px;
+ }
+
+ .gameBtn{
+  font-size:10px;
+ }
+}
+
+/* ================= LANDSCAPE ================= */
+
+@media(max-height:500px) and (orientation:landscape){
+
+ #menu{
+  justify-content:flex-start;
+  padding-top:10px;
+  overflow:auto;
+ }
+
+ .logo{
+  margin-bottom:8px;
+ }
+
+ .logo h1{
+  font-size:40px;
+ }
+
+ .modes{
+  grid-template-columns:repeat(3,1fr);
+ }
+
+ .modeCard{
+  min-height:95px;
+  padding:12px;
+ }
+
+ .modeIcon{
+  display:none;
+ }
+
+ .modeCard h2{
+  font-size:14px;
+ }
+
+ .modeCard p{
+  font-size:8px;
+ }
+
+ #game{
+  height:calc(100dvh - 135px);
+  min-height:230px;
+ }
+
+ .gameStats{
+  display:flex;
+ }
+
+ .stat{
+  padding:5px 8px;
+ }
+}
+</style>
+</head>
+
+<body>
+
+<!-- ================= MENU ================= -->
+
+<section id="menu">
+
+<div class="menuOrb"></div>
+
+<div class="logo">
+<div class="logoSmall">REFLEX SYSTEM</div>
+<h1>NEON HUNT</h1>
+<p>TEST YOUR REFLEXES</p>
+</div>
+
+<div class="modeTitle">SELECT GAME MODE</div>
+
+<div class="modes">
+
+<button class="modeCard"
+style="--modeColor:#00e5ff"
+onclick="startMode('classic')">
+
+<div class="modeIcon">🎯</div>
+
+<h2>CLASSIC</h2>
+
+<p>
+Бесконечный режим.
+Попадай по цели и набирай очки.
+</p>
+
+<div class="modeArrow">→</div>
+
+</button>
+
+<button class="modeCard"
+style="--modeColor:#b000ff"
+onclick="startMode('time')">
+
+<div class="modeIcon">⚡</div>
+
+<h2>TIME ATTACK</h2>
+
+<p>
+30 секунд.
+Собери максимум попаданий.
+</p>
+
+<div class="modeArrow">→</div>
+
+</button>
+
+<button class="modeCard"
+style="--modeColor:#ff3158"
+onclick="startMode('survival')">
+
+<div class="modeIcon">❤️</div>
+
+<h2>SURVIVAL</h2>
+
+<p>
+5 жизней.
+Промахи отнимают здоровье.
+</p>
+
+<div class="modeArrow">→</div>
+
+</button>
+
+</div>
+
+<div class="menuTools">
+
+<button class="toolBtn"
+onclick="showRecords()">
+🏆 РЕКОРДЫ
+</button>
+
+<button class="toolBtn"
+onclick="showHelp()">
+❔ ПОМОЩЬ
+</button>
+
+<button class="toolBtn"
+onclick="toggleMusic()"
+id="musicBtn">
+🔊 ЗВУК
+</button>
+
+</div>
+
+<div class="bestLine">
+BEST SCORE:
+<span id="bestScore">—</span>
+</div>
+
+</section>
+
+<!-- ================= GAME ================= -->
+
+<section id="gameScreen">
+
+<div class="gameTop">
+
+<div class="gameLogo">
+NEON HUNT
+</div>
+
+<div class="gameStats">
+
+<div class="stat">
+🎮 <span id="modeName">—</span>
+</div>
+
+<div class="stat">
+🎯 <b id="hits">0</b>
+</div>
+
+<div class="stat">
+🔥 <b id="combo">0</b>
+</div>
+
+<div class="stat">
+❤️ <b id="lives">❤️❤️❤️</b>
+</div>
+
+<div class="stat">
+🏁 <b id="stage">1 / 6</b>
+</div>
+
+<div class="stat">
+⏱ <b id="timer">0.0</b>
+</div>
+
+</div>
+
+</div>
+
+<div id="game">
+
+<div id="square"></div>
+
+<div id="pauseOverlay">
+
+<strong>PAUSED</strong>
+
+<span>
+Нажми «Продолжить»
+</span>
+
+</div>
+
+</div>
+
+<div id="message"></div>
+
+<div class="gameButtons">
+
+<button class="gameBtn"
+onclick="togglePause()"
+id="pauseBtn">
+⏸ Пауза
+</button>
+
+<button class="gameBtn"
+onclick="restartGame()">
+🔄 Заново
+</button>
+
+<button class="gameBtn"
+onclick="goMenu()">
+🏠 Меню
+</button>
+
+</div>
+
+</section>
+
+<!-- ================= RECORDS ================= -->
+
+<div class="modal" id="records">
+
+<div class="modalBox">
+
+<h2>🏆 TOP 10</h2>
+
+<div id="recordsContent"></div>
+
+<button class="closeBtn"
+onclick="clearRecords()">
+🗑 Очистить рекорды
+</button>
+
+<button class="closeBtn"
+onclick="closeModal('records')">
+Закрыть
+</button>
+
+</div>
+
+</div>
+
+<!-- ================= HELP ================= -->
+
+<div class="modal" id="help">
+
+<div class="modalBox">
+
+<h2>❔ КАК ИГРАТЬ</h2>
+
+<p>
+🎯 <b>CLASSIC</b> —
+бесконечный режим.
+</p>
+
+<p>
+⚡ <b>TIME ATTACK</b> —
+у тебя 30 секунд.
+</p>
+
+<p>
+❤️ <b>SURVIVAL</b> —
+у тебя 5 жизней.
+</p>
+
+<hr>
+
+<p>🔥 Быстрые попадания создают комбо.</p>
+
+<p>
+🎁 Бонусы:
+❤️ жизнь · ⏱ время · ⭐ комбо
+</p>
+
+<p>
+🎯 Клик по пустому месту отнимает жизнь.
+</p>
+
+<button class="closeBtn"
+onclick="closeModal('help')">
+Закрыть
+</button>
+
+</div>
+
+</div>
+
+<!-- ================= GAME OVER ================= -->
+
+<div id="gameOverModal">
+
+<div class="gameOverBox">
+
+<div class="gameOverIcon">
+💀
+</div>
+
+<h1 class="gameOverTitle">
+GAME OVER
+</h1>
+
+<div class="gameOverSubtitle">
+ВСЕ ЖИЗНИ ПОТРАЧЕНЫ
+</div>
+
+<div class="gameOverStats">
+
+<div class="gameOverStat">
+<span>ПОПАДАНИЯ</span>
+<strong id="goHits">0</strong>
+</div>
+
+<div class="gameOverStat">
+<span>ЛУЧШЕЕ КОМБО</span>
+<strong id="goCombo">0</strong>
+</div>
+
+<div class="gameOverStat">
+<span>ОЧКИ</span>
+<strong id="goScore">0</strong>
+</div>
+
+</div>
+
+<div class="gameOverButtons">
+
+<button class="gameOverBtn primary"
+onclick="gameOverRestart()">
+🔄 Начать заново
+</button>
+
+<button class="gameOverBtn"
+onclick="gameOverMenu()">
+🏠 Главное меню
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+/* ================= SETTINGS ================= */
+
+const stages={
+1:{size:60,speed:900,square:"square-red"},
+2:{size:57,speed:820,square:"square-blue"},
+3:{size:54,speed:740,square:"square-green"},
+4:{size:50,speed:650,square:"square-yellow"},
+5:{size:47,speed:570,square:"square-purple"},
+6:{size:44,speed:500,square:"square-orange"}
+};
+
+const TIME_LIMIT=30;
+const COMBO_TIME=1000;
+
+/* ================= ELEMENTS ================= */
+
+const menu=document.getElementById("menu");
+const gameScreen=document.getElementById("gameScreen");
+const game=document.getElementById("game");
+const square=document.getElementById("square");
+
+const hitsText=document.getElementById("hits");
+const comboText=document.getElementById("combo");
+const livesText=document.getElementById("lives");
+const stageText=document.getElementById("stage");
+const timerText=document.getElementById("timer");
+const message=document.getElementById("message");
+const pauseBtn=document.getElementById("pauseBtn");
+const pauseOverlay=document.getElementById("pauseOverlay");
+
+/* ================= STATE ================= */
+
+let mode="";
+let hits=0;
+let combo=0;
+let bestCombo=0;
+let lives=3;
+
+let playing=false;
+let paused=false;
+
+let startTime=0;
+let pausedTime=0;
+let pauseStart=0;
+
+let timerInterval=null;
+let moveInterval=null;
+let comboTimeout=null;
+
+/* ================= AUDIO ================= */
+
+let audio=null;
+let musicOn=true;
+let musicTimer=null;
+let musicIndex=0;
+
+const melody=[
+261.63,
+329.63,
+392,
+493.88,
+392,
+329.63,
+293.66,
+349.23
+];
+
+function initAudio(){
+
+ if(!audio){
+  audio=new(
+   window.AudioContext||
+   window.webkitAudioContext
+  )();
+ }
+
+ if(audio.state==="suspended"){
+  audio.resume();
+ }
+}
+
+function sound(
+ frequency,
+ duration,
+ type="sine"
+){
+
+ if(!musicOn)return;
+
+ initAudio();
+
+ const osc=audio.createOscillator();
+ const gain=audio.createGain();
+
+ osc.type=type;
+ osc.frequency.value=frequency;
+
+ gain.gain.setValueAtTime(
+  .1,
+  audio.currentTime
+ );
+
+ gain.gain.exponentialRampToValueAtTime(
+  .01,
+  audio.currentTime+duration
+ );
+
+ osc.connect(gain);
+ gain.connect(audio.destination);
+
+ osc.start();
+ osc.stop(audio.currentTime+duration);
+}
+
+function hitSound(){
+ sound(760,.08,"square");
+}
+
+function missSound(){
+ sound(150,.13,"sawtooth");
+}
+
+function loseSound(){
+ sound(100,.5,"sawtooth");
+ setTimeout(
+  ()=>sound(70,.25,"sawtooth"),
+  180
+ );
+}
+
+function winSound(){
+
+ sound(600,.12);
+
+ setTimeout(
+  ()=>sound(800,.12),
+  120
+ );
+
+ setTimeout(
+  ()=>sound(1050,.3),
+  240
+ );
+}
+
+/* ================= MUSIC ================= */
+
+function musicLoop(){
+
+ if(!musicOn||!playing||paused){
+
+  musicTimer=null;
+
+  return;
+ }
+
+ sound(
+  melody[musicIndex],
+  .12,
+  "triangle"
+ );
+
+ musicIndex=
+  (musicIndex+1)%melody.length;
+
+ musicTimer=
+  setTimeout(
+   musicLoop,
+   260
+  );
+}
+
+function startMusic(){
+
+ if(!musicOn||musicTimer)return;
+
+ musicLoop();
+}
+
+function stopMusic(){
+
+ clearTimeout(musicTimer);
+
+ musicTimer=null;
+}
+
+function toggleMusic(){
+
+ musicOn=!musicOn;
+
+ document.getElementById(
+  "musicBtn"
+ ).textContent=
+  musicOn?"🔊 ЗВУК":"🔇 ЗВУК";
+
+ if(musicOn){
+
+  initAudio();
+
+  if(playing){
+   startMusic();
+  }
+
+ }else{
+
+  stopMusic();
+
+ }
+}
+
+/* ================= RECORDS ================= */
+
+let records=JSON.parse(
+ localStorage.getItem(
+  "neonHuntRecords"
+ )||"[]"
+);
+
+function saveRecords(){
+
+ localStorage.setItem(
+  "neonHuntRecords",
+  JSON.stringify(records)
+ );
+}
+
+function calculateScore(){
+
+ if(mode==="survival"){
+  return hits*120+bestCombo*30;
+ }
+
+ return hits*100+bestCombo*25;
+}
+
+function addRecord(){
+
+ const score=calculateScore();
+ const now=new Date();
+
+ records.push({
+
+  mode,
+  score,
+  hits,
+  combo:bestCombo,
+  time:Number(
+   getGameTime().toFixed(2)
+  ),
+  date:now.toLocaleDateString(
+   "ru-RU"
+  ),
+  clock:now.toLocaleTimeString(
+   "ru-RU"
+  )
+
+ });
+
+ records.sort(
+  (a,b)=>b.score-a.score
+ );
+
+ records=records.slice(0,10);
+
+ saveRecords();
+
+ return score;
+}
+
+function modeTitle(m){
+
+ if(m==="classic")
+  return"🎯 Classic";
+
+ if(m==="time")
+  return"⚡ Time Attack";
+
+ return"❤️ Survival";
+}
+
+function renderRecords(){
+
+ const box=
+  document.getElementById(
+   "recordsContent"
+  );
+
+ if(!records.length){
+
+  box.innerHTML=
+   "<p style='color:#777'>Рекордов пока нет.</p>";
+
+  return;
+ }
+
+ let html=`
+ <table>
+ <tr>
+ <th>#</th>
+ <th>Режим</th>
+ <th>Очки</th>
+ <th>Попадания</th>
+ <th>Дата</th>
+ </tr>
+ `;
+
+ records.forEach((r,i)=>{
+
+  html+=`
+  <tr>
+  <td>
+  ${i===0?"🥇":
+    i===1?"🥈":
+    i===2?"🥉":""}${i+1}
+  </td>
+
+  <td>${modeTitle(r.mode)}</td>
+
+  <td>${r.score}</td>
+
+  <td>${r.hits}</td>
+
+  <td>
+  ${r.date}<br>${r.clock}
+  </td>
+
+  </tr>
+  `;
+
+ });
+
+ html+="</table>";
+
+ box.innerHTML=html;
+}
+
+function showRecords(){
+
+ renderRecords();
+
+ document.getElementById(
+  "records"
+ ).style.display="flex";
+}
+
+function clearRecords(){
+
+ if(!confirm(
+  "Удалить все рекорды?"
+ ))return;
+
+ records=[];
+
+ localStorage.removeItem(
+  "neonHuntRecords"
+ );
+
+ renderRecords();
+
+ updateBest();
+}
+
+/* ================= LEVELS ================= */
+
+function getStage(){
+
+ if(mode==="survival"){
+  return Math.min(
+   6,
+   Math.floor(hits/3)+1
+  );
+ }
+
+ if(hits<=2)return 1;
+ if(hits<=4)return 2;
+ if(hits<=6)return 3;
+ if(hits<=8)return 4;
+ if(hits<=10)return 5;
+
+ return 6;
+}
+
+function updateStage(){
+
+ const stage=getStage();
+ const data=stages[stage];
+
+ square.style.width=
+  data.size+"px";
+
+ square.style.height=
+  data.size+"px";
+
+ square.className=
+  data.square;
+
+ stageText.textContent=
+  stage+" / 6";
+}
+
+/* ================= MOVEMENT ================= */
+
+function moveSquare(){
+
+ if(!playing||paused)return;
+
+ const maxX=
+  game.clientWidth-
+  square.offsetWidth;
+
+ const maxY=
+  game.clientHeight-
+  square.offsetHeight;
+
+ square.style.left=
+  Math.random()*
+  Math.max(0,maxX)+"px";
+
+ square.style.top=
+  Math.random()*
+  Math.max(0,maxY)+"px";
+}
+
+function startMoving(){
+
+ clearInterval(moveInterval);
+
+ let speed;
+
+ if(mode==="survival"){
+
+  speed=Math.max(
+   260,
+   900-hits*45
+  );
+
+ }else{
+
+  speed=
+   stages[getStage()].speed;
+
+ }
+
+ moveInterval=
+  setInterval(
+   moveSquare,
+   speed
+  );
+}
+
+/* ================= COMBO ================= */
+
+function resetCombo(){
+
+ combo=0;
+
+ comboText.textContent="0";
+}
+
+function comboTimerStart(){
+
+ clearTimeout(comboTimeout);
+
+ comboTimeout=
+  setTimeout(
+   resetCombo,
+   COMBO_TIME
+  );
+}
+
+/* ================= LIVES ================= */
+
+function updateLives(){
+
+ livesText.textContent=
+  "❤️".repeat(lives)+
+  "🖤".repeat(
+   Math.max(0,5-lives)
+  );
+}
+
+function loseLife(){
+
+ if(!playing||paused)return;
+
+ lives--;
+
+ updateLives();
+
+ resetCombo();
+
+ missSound();
+
+ message.textContent=
+  "❌ ПРОМАХ!";
+
+ if(lives<=0){
+  gameOver();
+ }
+}
+
+/* ================= HIT DETECTION ================= */
+
+function isInsideShape(
+ clientX,
+ clientY
+){
+
+ const rect=
+  square.getBoundingClientRect();
+
+ const x=
+  clientX-rect.left;
+
+ const y=
+  clientY-rect.top;
+
+ const w=rect.width;
+ const h=rect.height;
+
+ if(
+  square.classList.contains(
+   "square-blue"
+  )
+ ){
+
+  const dx=x-w/2;
+  const dy=y-h/2;
+  const radius=Math.min(w,h)/2;
+
+  return(
+   dx*dx+dy*dy<=
+   radius*radius
+  );
+ }
+
+ if(
+  square.classList.contains(
+   "square-green"
+  )||
+  square.classList.contains(
+   "square-purple"
+  )
+ ){
+
+  return(
+   Math.abs(x-w/2)+
+   Math.abs(y-h/2)<=w/2
+  );
+ }
+
+ const padding=3;
+
+ return(
+  x>=padding&&
+  x<=w-padding&&
+  y>=padding&&
+  y<=h-padding
+ );
+}
+
+/* ================= TARGET TOUCH ================= */
+
+square.addEventListener(
+ "pointerdown",
+ function(e){
+
+  e.stopPropagation();
+
+  if(!playing||paused)return;
+
+  if(
+   !isInsideShape(
+    e.clientX,
+    e.clientY
+   )
+  ){
+
+   missSound();
+
+   message.textContent=
+    "❌ МИМО!";
+
+   return;
+  }
+
+  clearTimeout(
+   comboTimeout
+  );
+
+  hits++;
+  combo++;
+
+  bestCombo=
+   Math.max(
+    bestCombo,
+    combo
+   );
+
+  hitsText.textContent=hits;
+
+  comboText.textContent=combo;
+
+  hitSound();
+
+  createHitEffect(
+   e.clientX-
+    game.getBoundingClientRect().left,
+
+   e.clientY-
+    game.getBoundingClientRect().top
+  );
+
+  updateStage();
+
+  moveSquare();
+
+  startMoving();
+
+  comboTimerStart();
+
+  message.textContent=
+   combo>=2?
+   "🔥 COMBO x"+combo:
+   "🎯 HIT!";
+
+  if(Math.random()<.22){
+   spawnBonus();
+  }
+
+ },
+ {
+  passive:false
+ }
+);
+
+/* ================= MISS ================= */
+
+game.addEventListener(
+ "pointerdown",
+ function(e){
+
+  if(!playing||paused)return;
+
+  if(e.target===game){
+
+   loseLife();
+
+  }
+
+ },
+ {
+  passive:true
+ }
+);
+
+/* ================= EFFECT ================= */
+
+function createHitEffect(x,y){
+
+ const effect=
+  document.createElement("div");
+
+ effect.className=
+  "hitEffect";
+
+ effect.style.left=
+  x-10+"px";
+
+ effect.style.top=
+  y-10+"px";
+
+ game.appendChild(effect);
+
+ for(let i=0;i<10;i++){
+
+  const p=
+   document.createElement("div");
+
+  p.className=
+   "particleHit";
+
+  p.style.left=x+"px";
+  p.style.top=y+"px";
+
+  p.style.setProperty(
+   "--x",
+   Math.random()*140-70+"px"
+  );
+
+  p.style.setProperty(
+   "--y",
+   Math.random()*140-70+"px"
+  );
+
+  game.appendChild(p);
+
+  setTimeout(
+   ()=>p.remove(),
+   500
+  );
+ }
+
+ setTimeout(
+  ()=>effect.remove(),
+  500
+ );
+}
+
+/* ================= BONUS ================= */
+
+function spawnBonus(){
+
+ if(
+  document.querySelector(".bonus")
+ )return;
+
+ const bonus=
+  document.createElement("div");
+
+ bonus.className="bonus";
+
+ const type=
+  Math.floor(
+   Math.random()*3
+  );
+
+ if(type===0){
+
+  bonus.textContent="❤️";
+  bonus.classList.add(
+   "bonus-life"
+  );
+  bonus.dataset.type="life";
+
+ }else if(type===1){
+
+  bonus.textContent="⏱";
+  bonus.classList.add(
+   "bonus-time"
+  );
+  bonus.dataset.type="time";
+
+ }else{
+
+  bonus.textContent="⭐";
+  bonus.classList.add(
+   "bonus-combo"
+  );
+  bonus.dataset.type="combo";
+ }
+
+ bonus.style.left=
+  Math.random()*
+  (game.clientWidth-48)+"px";
+
+ bonus.style.top=
+  Math.random()*
+  (game.clientHeight-48)+"px";
+
+ game.appendChild(bonus);
+
+ bonus.addEventListener(
+  "pointerdown",
+  function(e){
+
+   e.stopPropagation();
+
+   collectBonus(bonus);
+
+  }
+ );
+
+ setTimeout(
+  ()=>{
+   if(bonus.isConnected)
+    bonus.remove();
+  },
+  4000
+ );
+}
+
+function collectBonus(bonus){
+
+ const type=
+  bonus.dataset.type;
+
+ if(type==="life"){
+
+  lives=
+   Math.min(
+    lives+1,
+    mode==="survival"?5:3
+   );
+
+  updateLives();
+
+  message.textContent=
+   "❤️ +1 LIFE";
+
+ }else if(
+  type==="time"&&
+  mode==="time"
+ ){
+
+  startTime-=3000;
+
+  message.textContent=
+   "⏱ +3 SEC";
+
+ }else if(
+  type==="combo"
+ ){
+
+  combo+=2;
+
+  bestCombo=
+   Math.max(
+    bestCombo,
+    combo
+   );
+
+  comboText.textContent=
+   combo;
+
+  message.textContent=
+   "⭐ COMBO +2";
+ }
+
+ hitSound();
+
+ bonus.remove();
+}
+
+/* ================= TIME ================= */
+
+function getGameTime(){
+
+ let elapsed=
+  performance.now()-
+  startTime-
+  pausedTime;
+
+ if(paused){
+
+  elapsed-=
+   performance.now()-
+   pauseStart;
+ }
+
+ return Math.max(
+  0,
+  elapsed/1000
+ );
+}
+
+function updateTimer(){
+
+ if(!playing)return;
+
+ const time=
+  getGameTime();
+
+ if(mode==="time"){
+
+  const left=
+   Math.max(
+    0,
+    TIME_LIMIT-time
+   );
+
+  timerText.textContent=
+   left.toFixed(1);
+
+  if(left<=0){
+
+   finishGame(false);
+
+  }
+
+ }else{
+
+  timerText.textContent=
+   time.toFixed(1);
+
+ }
+}
+
+/* ================= START ================= */
+
+function startMode(
+ selectedMode
+){
+
+ mode=selectedMode;
+
+ menu.style.display="none";
+
+ gameScreen.style.display="block";
+
+ startGame();
+}
+
+function startGame(){
+
+ initAudio();
+
+ clearInterval(timerInterval);
+ clearInterval(moveInterval);
+ clearTimeout(comboTimeout);
+
+ hits=0;
+ combo=0;
+ bestCombo=0;
+
+ lives=
+  mode==="survival"?5:3;
+
+ playing=true;
+ paused=false;
+
+ startTime=
+  performance.now();
+
+ pausedTime=0;
+ pauseStart=0;
+
+ hitsText.textContent="0";
+ comboText.textContent="0";
+
+ updateLives();
+
+ document.getElementById(
+  "modeName"
+ ).textContent=
+  modeTitle(mode);
+
+ updateStage();
+
+ timerText.textContent=
+  mode==="time"?
+  TIME_LIMIT.toFixed(1):
+  "0.0";
+
+ pauseBtn.disabled=false;
+
+ pauseBtn.textContent=
+  "⏸ Пауза";
+
+ pauseOverlay.style.display=
+  "none";
+
+ document
+  .querySelectorAll(".bonus")
+  .forEach(
+   b=>b.remove()
+  );
+
+ moveSquare();
+
+ startMoving();
+
+ timerInterval=
+  setInterval(
+   updateTimer,
+   50
+  );
+
+ message.textContent=
+  "LEVEL "+getStage();
+
+ stopMusic();
+
+ startMusic();
+}
+
+/* ================= PAUSE ================= */
+
+function togglePause(){
+
+ if(!playing)return;
+
+ paused=!paused;
+
+ if(paused){
+
+  pauseStart=
+   performance.now();
+
+  clearInterval(
+   moveInterval
+  );
+
+  clearTimeout(
+   comboTimeout
+  );
+
+  pauseBtn.textContent=
+   "▶ Продолжить";
+
+  pauseOverlay.style.display=
+   "flex";
+
+  stopMusic();
+
+ }else{
+
+  pausedTime+=
+   performance.now()-
+   pauseStart;
+
+  pauseStart=0;
+
+  pauseBtn.textContent=
+   "⏸ Пауза";
+
+  pauseOverlay.style.display=
+   "none";
+
+  startMoving();
+
+  if(combo>0){
+   comboTimerStart();
+  }
+
+  startMusic();
+ }
+}
+
+/* ================= GAME OVER ================= */
+
+function gameOver(){
+
+ playing=false;
+
+ clearInterval(
+  timerInterval
+ );
+
+ clearInterval(
+  moveInterval
+ );
+
+ clearTimeout(
+  comboTimeout
+ );
+
+ pauseBtn.disabled=true;
+
+ stopMusic();
+
+ loseSound();
+
+ showGameOver();
+}
+
+function showGameOver(){
+
+ const modal=
+  document.getElementById(
+   "gameOverModal"
+  );
+
+ document.getElementById(
+  "goHits"
+ ).textContent=hits;
+
+ document.getElementById(
+  "goCombo"
+ ).textContent=bestCombo;
+
+ document.getElementById(
+  "goScore"
+ ).textContent=
+  calculateScore();
+
+ modal.style.display="flex";
+
+ requestAnimationFrame(
+  ()=>{
+   requestAnimationFrame(
+    ()=>{
+     modal.classList.add(
+      "show"
+     );
+    }
+   );
+  }
+ );
+}
+
+function hideGameOver(){
+
+ const modal=
+  document.getElementById(
+   "gameOverModal"
+  );
+
+ modal.classList.remove(
+  "show"
+ );
+
+ setTimeout(
+  ()=>{
+   modal.style.display="none";
+  },
+  500
+ );
+}
+
+function gameOverRestart(){
+
+ hideGameOver();
+
+ setTimeout(
+  startGame,
+  300
+ );
+}
+
+function gameOverMenu(){
+
+ hideGameOver();
+
+ setTimeout(
+  goMenu,
+  300
+ );
+}
+
+/* ================= TIME ATTACK ================= */
+
+function finishGame(win){
+
+ playing=false;
+
+ clearInterval(timerInterval);
+ clearInterval(moveInterval);
+ clearTimeout(comboTimeout);
+
+ pauseBtn.disabled=true;
+
+ stopMusic();
+
+ if(win){
+  winSound();
+ }
+
+ const score=
+  addRecord();
+
+ showSimpleEnd(
+  win,
+  score
+ );
+
+ updateBest();
+}
+
+function showSimpleEnd(
+ win,
+ score
+){
+
+ const modal=
+  document.getElementById(
+   "endModal"
+  );
+
+ document.getElementById(
+  "endTitle"
+ ).textContent=
+  win?
+  "🏆 VICTORY":
+  "⏱ TIME UP";
+
+ document.getElementById(
+  "endMode"
+ ).textContent=
+  modeTitle(mode);
+
+ document.getElementById(
+  "endHits"
+ ).textContent=
+  hits;
+
+ document.getElementById(
+  "endTime"
+ ).textContent=
+  getGameTime().toFixed(2);
+
+ document.getElementById(
+  "endCombo"
+ ).textContent=
+  bestCombo;
+
+ document.getElementById(
+  "recordText"
+ ).textContent=
+  "🏆 "+score+" POINTS";
+
+ modal.style.display="flex";
+}
+
+/* ================= END MODAL ================= */
+
+document.body.insertAdjacentHTML(
+ "beforeend",
+ `
+ <div class="modal" id="endModal">
+
+ <div class="modalBox">
+
+ <div id="endTitle"
+ style="
+ font-size:clamp(35px,10vw,60px);
+ font-weight:900;
+ text-align:center;
+ color:#00e5ff;
+ text-shadow:0 0 25px rgba(0,229,255,.5)">
+ VICTORY
+ </div>
+
+ <div style="
+ margin:20px 0;
+ display:grid;
+ grid-template-columns:repeat(2,1fr);
+ gap:7px">
+
+ <div class="stat">
+ Режим<br>
+ <b id="endMode">—</b>
+ </div>
+
+ <div class="stat">
+ Попадания<br>
+ <b id="endHits">0</b>
+ </div>
+
+ <div class="stat">
+ Время<br>
+ <b>
+ <span id="endTime">0</span>
+ сек
+ </b>
+ </div>
+
+ <div class="stat">
+ Лучшее комбо<br>
+ <b id="endCombo">0</b>
+ </div>
+
+ </div>
+
+ <div id="recordText"
+ style="
+ text-align:center;
+ font-size:22px;
+ font-weight:bold;
+ color:#ffe600;
+ margin:18px">
+ </div>
+
+ <div style="
+ text-align:center">
+
+ <button class="toolBtn"
+ onclick="restartGame()">
+ ▶ ЕЩЁ РАЗ
+ </button>
+
+ <button class="toolBtn"
+ onclick="closeEnd()">
+ 🏠 МЕНЮ
+ </button>
+
+ </div>
+
+ </div>
+ </div>
+ `
+);
+
+/* ================= RESTART ================= */
+
+function restartGame(){
+
+ document.getElementById(
+  "endModal"
+ ).style.display="none";
+
+ startGame();
+}
+
+/* ================= MENU ================= */
+
+function goMenu(){
+
+ playing=false;
+
+ clearInterval(
+  timerInterval
+ );
+
+ clearInterval(
+  moveInterval
+ );
+
+ clearTimeout(
+  comboTimeout
+ );
+
+ stopMusic();
+
+ gameScreen.style.display="none";
+
+ menu.style.display="flex";
+
+ updateBest();
+}
+
+function closeEnd(){
+
+ document.getElementById(
+  "endModal"
+ ).style.display="none";
+
+ goMenu();
+}
+
+/* ================= HELP ================= */
+
+function showHelp(){
+
+ document.getElementById(
+  "help"
+ ).style.display="flex";
+}
+
+function closeModal(id){
+
+ document.getElementById(
+  id
+ ).style.display="none";
+}
+
+/* ================= BEST ================= */
+
+function updateBest(){
+
+ const el=
+  document.getElementById(
+   "bestScore"
+  );
+
+ if(!records.length){
+
+  el.textContent="—";
+
+  return;
+ }
+
+ el.textContent=
+  records[0].score+
+  " POINTS";
+}
+
+/* ================= INIT ================= */
+
+updateBest();
+
+/* Prevent iPhone double-tap zoom */
+document.addEventListener(
+ "dblclick",
+ e=>e.preventDefault(),
+ {
+  passive:false
+ }
+);
+
+</script>
+
+</body>
+</html>
